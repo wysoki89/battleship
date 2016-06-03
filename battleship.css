@@ -1,6 +1,6 @@
 /*CSS*/
 body {background-color: black}
-/*td {width:50px;height:50px}*/
+#mainText {color:white}
 table {margin:10px auto}
 td {border:3px solid;border-color:green;width:40px;height:40px}
 .hit img {width:37px}

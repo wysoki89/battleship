@@ -17,6 +17,14 @@ var view = { //object view with methods that are changing the user's view
     }       
 };
 
+var model = {
+    boardSize: 7,
+    numShips: 4,
+    shipsSunk:0,
+    
+    ships:[new Ship(1),new Ship(2),new Ship(3),new Ship(4)]
+};
+
 function Ship (size)
 { //function adding parameters to new object Ship
     this.size = size;
@@ -41,6 +49,7 @@ function Ship (size)
     return TempPositions;
     }   
     this.positions = this.SetPositions(this.size);
+    this.hits = ["","",""];
 };
 
 function Coordinate (row,col){ //function adding coordinates to new object Coordinate
@@ -48,11 +57,7 @@ function Coordinate (row,col){ //function adding coordinates to new object Coord
     this.col = col;
 }
 
-var ship1 = new Ship (1); //new object Ship
-var ship2 = new Ship (2); //new object Ship
-var ship3 = new Ship (3); //new object Ship    
-var ship4 = new Ship (4); //new object Ship
-var ships = [ship1, ship2, ship3, ship4];
+
 
 
 
@@ -63,16 +68,16 @@ var guesses = 0;
 var isSunk = false;
 
 $('td').on('click', function(){
-     if( ($(this).index() === ship1.positions[0].col && $(this).parent().index() === ship1.positions[0].row)  ||
-     ($(this).index() === ship2.positions[0].col && $(this).parent().index() === ship2.positions[0].row) ||
-     ($(this).index() === ship2.positions[1].col && $(this).parent().index() === ship2.positions[1].row) ||
-     ($(this).index() === ship3.positions[0].col && $(this).parent().index() === ship3.positions[0].row) ||
-     ($(this).index() === ship3.positions[1].col && $(this).parent().index() === ship3.positions[1].row) ||
-     ($(this).index() === ship3.positions[2].col && $(this).parent().index() === ship3.positions[2].row) ||
-     ($(this).index() === ship4.positions[0].col && $(this).parent().index() === ship4.positions[0].row) ||
-     ($(this).index() === ship4.positions[1].col && $(this).parent().index() === ship4.positions[1].row) ||
-     ($(this).index() === ship4.positions[2].col && $(this).parent().index() === ship4.positions[2].row) ||
-     ($(this).index() === ship4.positions[3].col && $(this).parent().index() === ship4.positions[3].row))
+     if( ($(this).index() === model.ships[0].positions[0].col && $(this).parent().index() === model.ships[0].positions[0].row)  ||
+     ($(this).index() === model.ships[1].positions[0].col && $(this).parent().index() === model.ships[1].positions[0].row) ||
+     ($(this).index() === model.ships[1].positions[1].col && $(this).parent().index() === model.ships[1].positions[1].row) ||
+     ($(this).index() === model.ships[2].positions[0].col && $(this).parent().index() === model.ships[2].positions[0].row) ||
+     ($(this).index() === model.ships[2].positions[1].col && $(this).parent().index() === model.ships[2].positions[1].row) ||
+     ($(this).index() === model.ships[2].positions[2].col && $(this).parent().index() === model.ships[2].positions[2].row) ||
+     ($(this).index() === model.ships[3].positions[0].col && $(this).parent().index() === model.ships[3].positions[0].row) ||
+     ($(this).index() === model.ships[3].positions[1].col && $(this).parent().index() === model.ships[3].positions[1].row) ||
+     ($(this).index() === model.ships[3].positions[2].col && $(this).parent().index() === model.ships[3].positions[2].row) ||
+     ($(this).index() === model.ships[3].positions[3].col && $(this).parent().index() === model.ships[3].positions[3].row))
      {
             hits++;
             view.displayHit(this);
@@ -85,7 +90,7 @@ $('td').on('click', function(){
      }
      console.log(hits);
      guesses++;
-     if (hits == ship1.size + ship2.size + ship3.size + ship4.size)
+     if (hits == model.ships[0].size + model.ships[1].size + model.ships[2].size + model.ships[3].size)
      {
         isSunk == true;
         $('#results p').html('Ilość błędów: ' + (guesses-(ship1.size + ship2.size + ship3.size + ship4.size)));
