@@ -1,17 +1,18 @@
 /*CSS*/
 body {background-color: black}
 #mainText {color:white}
-table {margin:10px auto}
-td {border:3px solid;border-color:green;width:40px;height:40px}
+#board table {margin:10px auto}
+#board td {border:3px solid;border-color:green;width:40px;height:40px}
 .hit img {width:37px}
 .missed {color:white;text-align:center;font-size:25px}
 @media only screen and (min-width:72em){
-td {width:76px;height:76px}
+#board td {width:76px;height:76px}
 .hit img {width:70px}
 .missed {font-size:50px}
 }
 
 
-#results p{font-size:25px};
-
-/*#board {position:absolute; left:296px}*/
+#mistakes p{font-size:25px}
+#divName {display:none; margin:0 auto}
+#btnName {width:100%}
+#results {display:none;}
