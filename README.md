@@ -1,4 +1,3 @@
 # battleship
 
-- dynamiczne generowanie tabeli
-- angular do przedstawiania wyników gry i sortowania ich
+- randomowe tworzenie ilości i wielkości statków

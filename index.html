@@ -14,8 +14,7 @@
 <!-- Optional theme -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 <link rel="stylesheet" href="battleship.css" type="text/css">
-
-
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
 <!--[if lt IE 9]>
     <script src="bower_components/html5shiv/dist/html5shiv.js"></script>
 <![endif]-->
@@ -23,104 +22,54 @@
 </head>
 
 
-<body>
-<h1 class="text-center" id="mainText">Zagraj w okręty z super generałem Tomaszem!</h1>
+<body data-ng-app="myModule">
+<h2 class="text-center" id="mainText">Battleship with General Thomas</h2>
 
-<div id="board">
-        <table>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                
-        </table>
-</div>
-
-<div class"row">
+<div class"row" data-ng-controller="myController">
     <div class="col-md-4 col-md-offset-4">
-    <h2 class ="h2 text-center" id="message"></h2>
+    <h3 class ="h3 text-center" id="message"></h3>
     <div id ="mistakes" class = "container-fluid">
     <p class="text-center"></p>
     </div>
 
     <div class="input-group" id="divName">
-    <span class="input-group-btn">
-        <button class="btn btn-default" type="button" id="btnName">Dodaj do tabeli wyników</button>
-    </span>
-    <input type="text" class="form-control text-center" placeholder="Username" aria-describedby="name" >
+        <span class="input-group-btn">
+            <button class="btn btn-default" type="button" id="btnName" ng-click="addUser()">Add me to the winner's table</button>
+        </span>
+        <input type="text" class="form-control text-center" placeholder="Username" aria-describedby="name" >
     </div>
+    <div id="results-container" >
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1">Find a friend</span>
+        <input type="text" class="form-control" placeholder="Username" ng-model="username" aria-describedby="basic-addon1">
+    </div>
+    
     <table id="results" class="table table-striped text-center">
     <tr>
         <td>Nick</td>
-        <td>Ilosc bledow</td>
+        <td>Mistakes</td>
+    </tr>
+    <tr class="table table-striped" data-ng-repeat="user in users | filter:username | orderBy:'mistakes'">
+        <td > {{user.name}}</td> <td>{{user.mistakes}}</td>
     </tr>
     </table>
+    <button id="play" type="button" class="btn btn-primary">Play again!</button>
+    </div>
 </div>
 </div>
+
+<div class="row">   
+	<div id="board" class="col-md-6 col-md-offset-3">
+            <table></table>
+    </div>
+    <div class="col-md-3">
+		<div id="ships"></div>
+	</div>
+</div>
+
 
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-<script src="lodash.js"></script>
 <script type="text/javascript" src="battleship.js"></script>
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>

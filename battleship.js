@@ -1,113 +1,244 @@
 //function adding coordinates to new object Coordinate
-function Coordinate (row,col){ 
+function Coordinate(row,col){ 
     this.row = row;
     this.col = col;
     this.isHit = false;
 }
 
-//object view with methods that are changing the user's view
+//object view with methods that are changing user's view
 var view = { 
     
-    displayMessage: function(msg){
-        $('#message').html("");
-        setTimeout(function(){
-            $('#message').html(msg)},100)
-    },
-    
-    displayHit: function(cell){
-        
-    $('td').eq(cell.row*7+cell.col).addClass("hit");
-    $('td').eq(cell.row*7+cell.col).html('<img src="ship.png">');
-    },
-    
-    displayMiss: function(cell){
-        if(!$('td').eq(cell.row*7+cell.col).hasClass("hit"))
-        {
-            $('td').eq(cell.row*7+cell.col).html("X");
-            $('td').eq(cell.row*7+cell.col).addClass("missed");
+    // create board to play 
+    createBoard: function(size){
+        for(i=0;i<size;i++){
+            $('#board table').append("<tr></tr>");
+            for(j=0;j<size;j++){
+                $('#board table tr').eq(i).append("<td></td>");
+            }               
         }
-    }       
+    },
+    
+    // display message hit or missed after clicking td
+	displayMessage: function(msg){
+        $('#message').css({ "color": "black"});
+        setTimeout(function(){
+            $('#message').html(msg)
+        },100);
+        $('#message').css({ "color": "white"});
+    },
+    
+    // display ship after hit
+    displayHit: function(cell){
+    $('#board td').eq(cell.row*7+cell.col).addClass("hit");
+    $('#board td').eq(cell.row*7+cell.col).html('<img src="ship.png">');
+    },
+    
+    // display miss after missed
+    displayMiss: function(cell){
+        if(!$('#board td').eq(cell.row*7+cell.col).hasClass("hit"))
+        {
+            $('#board td').eq(cell.row*7+cell.col).html("X");
+            $('#board td').eq(cell.row*7+cell.col).addClass("missed");
+        }
+    },
+
+    //sink ship - change opacity of sunk ship on side    
+    sinkShip: function(shipNumber){
+        $('#ships div').eq(shipNumber).addClass("shipSunk");
+    },
+	
+    // display number of mistakes and message of winning, hide board and ships and display next step
+    win: function(){
+        $('#mistakes p').html('Number of mistakes: ' + controller.noMistakes);
+            this.displayMessage("You won!");
+            setTimeout(function(){
+                $('#board').hide();
+                $('#ships').hide();
+                $('#divName').show();
+            },3000);
+    },
+    
+    // restart view
+	restart: function(){
+        $('#results-container').hide();
+        $('#board').show();
+        $('#mistakes p').html("");
+        $('input').val("");
+        $('#board td').html("");
+        $('#board td').removeClass("hit");
+        $('#board td').removeClass("missed");
+		model.ships.forEach(function(item,index){
+			$('#ships').append("<div></div>");
+			var shipIndex = index;
+				item.positions.forEach(function(item,index){
+					$('#ships div').eq(shipIndex).append('<img src="ship.png">');
+				});
+		});
+    }
+           
 };
 
+//object model with methods that are changing model
 var model = {
-    boardSize: 7,
-    numShips: 4,
-    shipsSunk:0,
-    //function adding parameters to new object Ship
+    boardSize:7,
     ships:[],
-    makeShip: function (size){
+    makeShip: function(size){
+        this.positions=[];    
         this.size = size;
-        this.SetPositions = function(shipSize)
-        {   
-        var tempPositions = [];
-        
-        tempPositions[0]= new Coordinate (Math.floor((Math.random()*(8-shipSize))), Math.floor((Math.random()*(8-shipSize))));//maximum position of first location of the ship
-        if ( Math.random() > 0.5) // horizontal
+        this.hits=0;
+    },
+    
+    // set random positions of each ship
+    setPositions: function()
         {
-            for (i=1; i < shipSize; i++)
+        this.ships.forEach(function(item){ //for each ship
+            do{
+            item.positions[0]= new Coordinate (Math.floor((Math.random()*(8-item.size))), Math.floor((Math.random()*(8-item.size))));//maximum position of first location of the ship
+            if ( Math.random() > 0.5) // horizontal
             {
-                tempPositions[i]= new Coordinate(tempPositions[i-1].row, tempPositions[i-1].col + 1);
-            }    
-        }
-        else //vertical
-        {
-            for (i=1; i < shipSize; i++)
-            {
-                tempPositions[i]= new Coordinate(tempPositions[i-1].row + 1, tempPositions[i-1].col);
-                tempPositions.isHit = false;
+                // create next positions
+                for (i=1; i < item.size; i++)
+                {
+                    item.positions[i]= new Coordinate(item.positions[i-1].row, item.positions[i-1].col + 1);
+                }    
             }
+            else //vertical
+            {
+                // create next positions
+                for (i=1; i < item.size; i++)
+                {
+                    item.positions[i]= new Coordinate(item.positions[i-1].row + 1, item.positions[i-1].col);
+                }
+            }
+            } 
+            while(model.collision(item)>item.size); //if number of collisions is greater than ship's size - create positions again    
+            });   
+        },
+    
+    // outputs number of collisions
+    collision: function(ship){
+        var collisions=0;
+        this.ships.forEach(function(item){ //for each existing ship
+            item.positions.forEach(function(item){ // for each position in existing ship
+                var checkedPosition = item;
+                ship.positions.forEach(function(item){ //check each position of new ship 
+                    if(checkedPosition.col===item.col && checkedPosition.row===item.row){
+                        collisions++;
+                      }    
+                });
+            });
+        });
+        return collisions;
+    },   
+    
+    // check if ship should sink
+    isSunk: function(ship){
+    if(ship.hits===ship.size)
+        {
+        view.sinkShip(model.ships.indexOf(ship));
+        view.displayMessage("Sunk");
         }
-        return tempPositions;
-        }   
-        this.positions = this.SetPositions(this.size);
+    },
+    
+    // restart model
+    restart: function(){
+        this.ships.forEach(function(item) { //for each ship
+        item.positions.forEach(function(item){ //for each position in current ship
+            item.isHit = false;
+        });
+    });
     }
 };
 
-// model.ships = [new model.makeShip(1),new model.makeShip(2),new model.makeShip(3),new model.makeShip(4)];
-model.ships = [new model.makeShip(1),new model.makeShip(2),new model.makeShip(3),new model.makeShip(4)];
-model.fire = function(){
-             var currentHits = hits;
-             var shotCell = this;
-             shotCell.col = $(this).index(); 
-             shotCell.row = $(this).parent().index();
-             model.ships.forEach(function(item) { //for each ship
+// creating ships and theit positions
+model.ships = [new model.makeShip(1),new model.makeShip(2),new model.makeShip(3),new model.makeShip(4)]; 
+model.setPositions();
+
+//checks if the ship is hit
+model.fire = function(col,row){
+             var currentHits = controller.hits;
+             var shotCell = {};
+             shotCell.col = col; 
+             shotCell.row = row;
+             model.ships.forEach(function(item,index) { //for each ship
                     var currentShip = item;
+                    var currentShipNumber = index;
                     item.positions.forEach(function(item,index){ //for each position in current ship
                         if( (shotCell.col === item.col) && (shotCell.row === item.row) && (currentShip.positions[index].isHit===false))
                         {
                             currentShip.positions[index].isHit=true;
-                            hits++;
+                            controller.hits++;
                             view.displayHit(shotCell);
-                            view.displayMessage("Trafiłeś!");
+                            view.displayMessage("Hit!");
+                            currentShip.hits++;
+                            model.isSunk(currentShip);
                         }
                     });
              });
-             if (hits === currentHits) //if there wasn't made another hit
+             if (controller.hits === currentHits) //if there wasn't made another hit
              {
                      view.displayMiss(shotCell);
-                     view.displayMessage("Pudło!");
-             }
-            guesses++;
-            if (hits === model.ships[0].size + model.ships[1].size + model.ships[2].size + model.ships[3].size)
+                     view.displayMessage("Missed!");
+             };
+             controller.isWin();
+};
+
+// controller joins view and model
+var controller = {
+    // gives data to model and increase number of guesses
+    processGuess: function(col,row){
+        this.guesses++;
+        model.fire(col,row);
+    },
+    // restart controller
+    restart:function(){
+        this.noMistakes = 0;
+        this.hits = 0;
+        this.guesses = 0;
+    },
+    // check if number of hits = number of ship's positions
+    isWin:function(){
+        if (this.hits === model.ships[0].size + model.ships[1].size + model.ships[2].size + model.ships[3].size)
             {
-            noMistakes = guesses-(model.ships[0].size + model.ships[1].size + model.ships[2].size + model.ships[3].size);
-            $('#mistakes p').html('Ilość błędów: ' + noMistakes);
-            view.displayMessage("Wygrałeś!");
-            $('table').hide();
-            $('#divName').show();
+            this.noMistakes = this.guesses-(model.ships[0].size + model.ships[1].size + model.ships[2].size + model.ships[3].size);
+            view.win();
             }
+    }
 }
-//!!! dodaj do funkcji setPositions sprawdzenie czy już nie ma takiego statku! - tylko nie wiem jak 
-
-var noMistakes = 0;
-var hits = 0;
-var guesses = 0;
-
-$('td').on('click', model.fire);
-$('#btnName').on('click', function(){
-    $('#divName').hide();
-    $('#results').show();
-    $('#results').append('<tr><td>' + $('input').val() + '</td><td>' + noMistakes + '</td></tr>')
-    $('#results tr').addClass('table table-striped');   
+view.createBoard(model.boardSize);
+controller.restart();
+model.restart();
+view.restart();
+// gives location of hit after clicking on td
+$('#board td').on('click', function(){
+    if(!$(this).hasClass("guess")){
+        $(this).addClass("guess");
+        controller.processGuess($(this).index(), $(this).parent().index());
+    }
 });
 
+// input user's name action
+$('#btnName').on('click', function(){
+    $('#divName').hide();
+    $('#results-container').show();
+});
+
+// play again action
+$('#play').on('click', function(){
+    view.restart();
+    model.restart();
+    view.displayMessage("");
+});
+
+//initialize data for winer's table and add new user after clicking button 
+var myModule = angular.module('myModule', []);
+myModule.controller('myController', function myController($scope){
+        $scope.users = [
+        {name:'Generał Tomasz', mistakes:0},
+        {name:'Marek12', mistakes:15},
+        {name:'elcia', mistakes:4},    
+        ];
+		$scope.addUser = function(){
+			$scope.users.push({'name':$('input').val(), 'mistakes':controller.noMistakes});
+		};
+    });
