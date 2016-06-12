@@ -77,6 +77,7 @@ var view = {
         $('#board td').removeClass("hit");
         $('#board td').removeClass("missed");
 		$('#ships').show();
+        $('#ships img').removeClass("shipSunk");
         $('#ships img').addClass("shipNotSunk");
     }
            
@@ -207,12 +208,8 @@ var controller = {
             this.noMistakes = this.guesses-(model.ships[0].size + model.ships[1].size + model.ships[2].size + model.ships[3].size);
             view.win();
             }
-<<<<<<< HEAD
     } 
-=======
-    }
->>>>>>> f92841f182391ac9268bfd4aa044a6f265099c84
-}
+    };
 view.createBoard(model.boardSize);
 view.createSideShips();
 controller.restart();
