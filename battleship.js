@@ -232,6 +232,13 @@ $('#btnName').on('click', function(){
     $('#results-container').show();
 });
 
+$('#newUserName').on('keypress', function(e){
+    if(e.keyCode===13){
+        $('#divName').hide();
+        $('#results-container').show();        
+    }
+});
+
 // play again action
 $('#play').on('click', function(){
     view.restart();
@@ -250,5 +257,6 @@ myModule.controller('myController', function myController($scope){
         ];
 		$scope.addUser = function(){
 			$scope.users.push({'name':$('input').val(), 'mistakes':controller.noMistakes});
-		};
+        };
+        
     });

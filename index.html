@@ -36,12 +36,12 @@
         <span class="input-group-btn">
             <button class="btn btn-default" type="button" id="btnName" ng-click="addUser()">Add me to the winner's table</button>
         </span>
-        <input type="text" class="form-control text-center" placeholder="Username" aria-describedby="name" >
+        <input id="newUserName" type="text" class="form-control text-center" data-ng-keypress="$event.which === 13 && addUser()" placeholder="Username" aria-describedby="name" >
     </div>
     <div id="results-container" >
     <div class="input-group">
         <span class="input-group-addon" id="basic-addon1">Find a friend</span>
-        <input type="text" class="form-control" placeholder="Username" ng-model="username" aria-describedby="basic-addon1">
+        <input type="text" class="form-control" placeholder="username" ng-model="username" aria-describedby="basic-addon1">
     </div>
     
     <table id="results" class="table table-striped text-center">
