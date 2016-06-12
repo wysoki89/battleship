@@ -39,10 +39,16 @@
       var Model = function (params) {
         //Tworzymy model
         this.size = params.size || 1; //domyślnie 1
+        this.hit = []; //zero trafien
         this.crashed = false; //Stan początkowy
         this.x = params.x || 0;
         this.y = params.y || 0;
       }
+      
+      /**
+       * Mysle ze tutaj warto do prototypu byloby dodać
+       * Metode ktora dynamicznie generuje ilosc 
+       */
       
       return Model;
     
@@ -72,10 +78,14 @@
       }
       
       /**
-       * Metoda sprawdzi czy na polu X i Y znajduje sie statek
+       * Metoda sprawdzi czy na polu X i Y znajduje sie statek 
+       * Poprzez wywołanie w/w metody i oznaczy go jako ustrzelony
+       * Oczywiscie pokazowo bo wiadomo ze jeszcze trzeba
+       * sprawdzic czy caly jest ostrzelany
        */
       Collection.prototype.fire = function (x, y) {
         this.checkShipAtXY(x,y).map(function(model){
+          //mozemy dodac do model.hits dany wskaznik i jezeli hits.length === model.size wtedy dopiero oznaczyc jako crashed
           model.crashed = true;
         });
       }
@@ -92,14 +102,14 @@
       }
 
       /**
-       * Metoda zwróci wszystkie statki o rozmiarze 1 z twojej kolekcji.
+       * Metoda do ulozenia statkow na planszy (dummy)
        */
       View.prototype.placeShips = function () {
         //Kod co układa randomodo statki  
       }
 
       /**
-       * Metoda sprawdzi czy na polu X i Y znajduje sie statek
+       * Renderowanie widoku
        */
       View.prototype.render = function () {
         this.$el.html('<p>Tutaj bedzie plansza</p>') //Tutaj kod co renderuje plansze
