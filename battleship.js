@@ -207,7 +207,7 @@ var controller = {
             this.noMistakes = this.guesses-(model.ships[0].size + model.ships[1].size + model.ships[2].size + model.ships[3].size);
             view.win();
             }
-    }
+    } 
 }
 view.createBoard(model.boardSize);
 view.createSideShips();
