@@ -76,9 +76,10 @@ var view = {
         $('#board td').html("");
         $('#board td').removeClass("hit");
         $('#board td').removeClass("missed");
+        $('#board td').removeClass("guess");
 		$('#ships').show();
-        $('#ships img').removeClass("shipSunk");
-        $('#ships img').addClass("shipNotSunk");
+        $('#ships div').removeClass("shipSunk");
+        // $('#ships div').addClass("shipNotSunk");
     }
            
 };
@@ -151,13 +152,15 @@ var model = {
         item.positions.forEach(function(item){ //for each position in current ship
             item.isHit = false;
         });
+        item.hits=0;
     });
+    this.setPositions();
     }
 };
 
-// creating ships and theit positions
+// creating ships and their positions
 model.ships = [new model.makeShip(1),new model.makeShip(2),new model.makeShip(3),new model.makeShip(4)]; 
-model.setPositions();
+// model.setPositions();
 
 //checks if the ship is hit
 model.fire = function(col,row){
@@ -211,10 +214,10 @@ var controller = {
     } 
     };
 view.createBoard(model.boardSize);
-view.createSideShips();
 controller.restart();
 model.restart();
 view.restart();
+view.createSideShips();
 // gives location of hit after clicking on td
 $('#board td').on('click', function(){
     if(!$(this).hasClass("guess")){
@@ -242,8 +245,8 @@ var myModule = angular.module('myModule', []);
 myModule.controller('myController', function myController($scope){
         $scope.users = [
         {name:'Generał Tomasz', mistakes:0},
-        {name:'Marek12', mistakes:15},
-        {name:'elcia', mistakes:4},    
+        {name:'Marek12', mistakes:39},
+        {name:'elcia', mistakes:12},    
         ];
 		$scope.addUser = function(){
 			$scope.users.push({'name':$('input').val(), 'mistakes':controller.noMistakes});
