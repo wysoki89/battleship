@@ -211,7 +211,7 @@ var controller = {
         view.displayMessage("Sunk");
         }
     }, 
-    };
+    }; 
 function init(){
     view.createBoard(model.boardSize);
     controller.restart();
