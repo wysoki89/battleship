@@ -219,7 +219,7 @@ function init(){
     view.restart();
     view.createSideShips();    
 };
-init();
+init(); 
 
 // gives location of hit after clicking on td
 $('#board td').on('click', function(){
