@@ -213,45 +213,45 @@ var controller = {
         view.displayMessage("Sunk");
         }
     }, 
-    }; 
+};
 function init(){
     view.createBoard(model.boardSize);
     controller.restart();
     model.restart();
     view.restart();
-    view.createSideShips();    
+    view.createSideShips();
+    
+    // gives location of hit after clicking on td
+    $('#board td').on('click', function(){
+        if(!$(this).hasClass("guess")){
+            $(this).addClass("guess");
+            controller.processGuess($(this).index(), $(this).parent().index());
+        }
+    });
+
+    // input user's name action
+    $('#btnName').on('click', function(){
+        $('#divName').hide();
+        $('#results-container').show();
+    });
+
+    // input user's name action on pressing enter
+    $('#newUserName').on('keypress', function(e){
+        if(e.keyCode===13){
+            $('#divName').hide();
+            $('#results-container').show();        
+        }
+    });
+
+    // play again action
+    $('#play').on('click', function(){
+        view.restart();
+        model.restart();
+        controller.restart();
+        view.displayMessage("");
+    });    
 };
 init(); 
-
-// gives location of hit after clicking on td
-$('#board td').on('click', function(){
-    if(!$(this).hasClass("guess")){
-        $(this).addClass("guess");
-        controller.processGuess($(this).index(), $(this).parent().index());
-    }
-});
-
-// input user's name action
-$('#btnName').on('click', function(){
-    $('#divName').hide();
-    $('#results-container').show();
-});
-
-// input user's name action on pressing enter
-$('#newUserName').on('keypress', function(e){
-    if(e.keyCode===13){
-        $('#divName').hide();
-        $('#results-container').show();        
-    }
-});
-
-// play again action
-$('#play').on('click', function(){
-    view.restart();
-    model.restart();
-    controller.restart();
-    view.displayMessage("");
-});
 
 //initialize data for winer's table and add new user after clicking button 
 var myModule = angular.module('myModule', []);
