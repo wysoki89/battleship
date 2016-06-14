@@ -39,17 +39,19 @@ var view = {
     
     // display ship after hit
     displayHit: function(cell){
-    $('#board td').eq(cell.row*7+cell.col).addClass("hit");
-    $('#board td').eq(cell.row*7+cell.col).html('<img src="ship.png">');
+        var cellOnBoard = $('#board td').eq(cell.row*7+cell.col);
+        cellOnBoard.addClass("hit");
+        cellOnBoard.html('<img src="ship.png">');
     },
     
     // display miss after missed
     displayMiss: function(cell){
-        if(!$('#board td').eq(cell.row*7+cell.col).hasClass("hit"))
+        var cellOnBoard = $('#board td').eq(cell.row*7+cell.col);
+        if(!cellOnBoard.hasClass("hit"))
         {
-            $('#board td').eq(cell.row*7+cell.col).html("X");
-            $('#board td').eq(cell.row*7+cell.col).addClass("missed");
-        }
+            cellOnBoard.html("X");
+            cellOnBoard.addClass("missed");
+        }  
     },
 
     //sink ship - change opacity of sunk ship on side    
