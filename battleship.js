@@ -1,5 +1,3 @@
-//closure to avoid overwriting my objects and variables by other libraries
-(function (window, jQuery, angular) {
         //function adding coordinates to new object Coordinate
         function Coordinate(row,col){ 
             this.row = row;
@@ -230,18 +228,19 @@
                     controller.processGuess($(this).index(), $(this).parent().index());
                 }
             });
-
-            // input user's name action
-            $('#btnName').on('click', function(){
+            
+            function addName(){
                 $('#divName').hide();
                 $('#results-container').show();
-            });
+                localStorage.setItem($('#newUserName').val(), controller.noMistakes);
+            };
+            // input user's name action
+            $('#btnName').on('click', addName);
 
             // input user's name action on pressing enter
             $('#newUserName').on('keypress', function(e){
                 if(e.keyCode===13){
-                    $('#divName').hide();
-                    $('#results-container').show();        
+                    addName();        
                 }
             });
 
@@ -268,5 +267,4 @@
                 };
                 
             });
-})(window, jQuery, angular)
-    
+     
