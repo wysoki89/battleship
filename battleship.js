@@ -232,7 +232,6 @@
             function addName(){
                 $('#divName').hide();
                 $('#results-container').show();
-                localStorage.setItem($('#newUserName').val(), controller.noMistakes);
             };
             // input user's name action
             $('#btnName').on('click', addName);
