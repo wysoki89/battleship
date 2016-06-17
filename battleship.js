@@ -36,23 +36,21 @@
                 $('#message').css({ "color": "white"});
             },
             
-            // display ship after hit
-            displayHit: function(cell){
+            // display ship after hit or cross after missed
+            displayHitOrMissed: function(cell, msg){
                 var cellOnBoard = $('#board td').eq(cell.row*7+cell.col);
-                cellOnBoard.addClass("hit");
-                cellOnBoard.html('<img src="ship.png">');
-            },
-            
-            // display miss after missed
-            displayMiss: function(cell){
-                var cellOnBoard = $('#board td').eq(cell.row*7+cell.col);
-                if(!cellOnBoard.hasClass("hit"))
+                if(msg === "hit")
+                {
+                    cellOnBoard.addClass("hit");
+                    cellOnBoard.html('<img src="ship.png">');
+                }
+                else if (msg==="missed" && !cellOnBoard.hasClass("hit"))
                 {
                     cellOnBoard.html("X");
                     cellOnBoard.addClass("missed");
-                }  
+                }    
             },
-
+            
             //sink ship - change opacity of sunk ship on side    
             sinkShip: function(shipNumber){
                 $('#ships div').eq(shipNumber).addClass("shipSunk");
@@ -81,20 +79,22 @@
                 $('#board td').removeClass("guess");
                 $('#ships').show();
                 $('#ships div').removeClass("shipSunk");
+                this.displayMessage("");
             },
             
             results: function(){
                 $('#ships').hide();
                 $('#board').hide();
+                $('#divName').hide();
                 $('#results-container').show();
-            } 
+            },
         };
-
+        
         //object model with methods that are changing model
         var model = {
             boardSize:7,
             ships:[],
-            MakeShip: function(size){
+            Ship: function(size){
                 this.positions=[];    
                 this.size = size;
                 this.hits=0;
@@ -157,7 +157,7 @@
         };
 
         // creating ships and their positions
-        model.ships = [new model.MakeShip(1),new model.MakeShip(2),new model.MakeShip(3),new model.MakeShip(4)]; 
+        model.ships = [new model.Ship(1),new model.Ship(2),new model.Ship(3),new model.Ship(4)]; 
         //checks if the ship is hit
         model.fire = function(col,row){
                     var currentHits = controller.hits;
@@ -172,7 +172,7 @@
                                 {
                                     currentShip.positions[index].isHit=true;
                                     controller.hits++;
-                                    view.displayHit(shotCell);
+                                    view.displayHitOrMissed(shotCell, "hit");
                                     view.displayMessage("Hit!");
                                     currentShip.hits++;
                                     controller.isSunk(currentShip);
@@ -181,7 +181,7 @@
                     });
                     if (controller.hits === currentHits) //if there wasn't made another hit
                     {
-                            view.displayMiss(shotCell);
+                            view.displayHitOrMissed(shotCell,"missed");
                             view.displayMessage("Missed!");
                     };
                     controller.isWin();
@@ -232,17 +232,13 @@
                 }
             });
             
-            function addName(){
-                $('#divName').hide();
-                $('#results-container').show();
-            };
             // input user's name action
-            $('#btnName').on('click', addName);
+            $('#btnName').on('click', view.results);
 
             // input user's name action on pressing enter
             $('#newUserName').on('keypress', function(e){
                 if(e.keyCode===13){
-                    addName();        
+                    view.results();        
                 }
             });
 
@@ -251,7 +247,6 @@
                 view.restart();
                 model.restart();
                 controller.restart();
-                view.displayMessage("");
             });
             
             $('#resultsMenu').on('click', function(){
