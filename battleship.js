@@ -157,7 +157,9 @@
         };
 
         // creating ships and their positions
-        model.ships = [new model.Ship(1),new model.Ship(2),new model.Ship(3),new model.Ship(4)]; 
+        model.ships = [new model.Ship(1),new model.Ship(2),new model.Ship(3),new model.Ship(4)];
+        // lodash map for taking into array values of size from each ship and than lodash sum
+        model.allShips = _.sum(_.map(model.ships, 'size'));
         //checks if the ship is hit
         model.fire = function(col,row){
                     var currentHits = controller.hits;
@@ -202,9 +204,9 @@
             },
             // check if number of hits = number of ship's positions
             isWin:function(){
-                if (this.hits === model.ships[0].size + model.ships[1].size + model.ships[2].size + model.ships[3].size)
+                if (this.hits === model.allShips)
                     {
-                    this.noMistakes = this.guesses-(model.ships[0].size + model.ships[1].size + model.ships[2].size + model.ships[3].size);
+                    this.noMistakes = this.guesses-model.allShips;
                     view.win();
                     }
             },
