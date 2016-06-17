@@ -1,4 +1,4 @@
-        //function adding coordinates to new object Coordinate
+            //function adding coordinates to new object Coordinate
         function Coordinate(row,col){ 
             this.row = row;
             this.col = col;
@@ -82,7 +82,12 @@
                 $('#ships').show();
                 $('#ships div').removeClass("shipSunk");
             },
-                
+            
+            results: function(){
+                $('#ships').hide();
+                $('#board').hide();
+                $('#results-container').show();
+            } 
         };
 
         //object model with methods that are changing model
@@ -153,8 +158,6 @@
 
         // creating ships and their positions
         model.ships = [new model.MakeShip(1),new model.MakeShip(2),new model.MakeShip(3),new model.MakeShip(4)]; 
-        // model.setPositions();
-
         //checks if the ship is hit
         model.fire = function(col,row){
                     var currentHits = controller.hits;
@@ -244,12 +247,17 @@
             });
 
             // play again action
-            $('#play').on('click', function(){
+            $('.play').on('click', function(){
                 view.restart();
                 model.restart();
                 controller.restart();
                 view.displayMessage("");
-            });    
+            });
+            
+            $('#resultsMenu').on('click', function(){
+                view.results();
+            });
+                
         };
         init(); 
 

@@ -23,9 +23,28 @@
 
 
 <body data-ng-app="myModule">
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand play" role="button">Battleship</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a class="active play" role="button">Play <span class="sr-only"></span></a></li>
+                <li><a id="resultsMenu" role="button">Results</li>
+            </ul>
+        </div>
+    </div>
+</nav>
 <h2 class="text-center" id="mainText">Battleship with General Thomas</h2>
 
-<div class"row" data-ng-controller="myController">
+<div class="row" data-ng-controller="myController">
     <div class="col-md-4 col-md-offset-4">
     <h3 class ="h3 text-center" id="message"></h3>
     <div id ="mistakes" class = "container-fluid">
@@ -53,7 +72,7 @@
         <td > {{user.name}}</td> <td>{{user.mistakes}}</td>
     </tr> 
     </table>
-    <button id="play" type="button" class="btn btn-primary">Play again!</button>
+    <button id="play" type="button" class="btn btn-primary play">Play again!</button>
     </div>
 </div>
 </div>
