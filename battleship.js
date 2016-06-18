@@ -6,7 +6,7 @@
             this.row = row;
             this.col = col;
             this.isHit = false;
-        }
+        } 
 
         //object view with methods that are changing user's view
         var view = { 
