@@ -1,4 +1,7 @@
+// closure to run the code and not leave access to my objects
+(function (window, jQuery, angular) {
             //function adding coordinates to new object Coordinate
+        
         function Coordinate(row,col){ 
             this.row = row;
             this.col = col;
@@ -271,4 +274,4 @@
                 };
                 
             });
-     
+})(window, jQuery, angular)
