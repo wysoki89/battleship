@@ -1,26 +1,27 @@
 /*CSS*/
 body {background-color: black}
 #mainText {color:white}
-#board table {margin:10px auto}
-#board td {border:3px solid;border-color:green;width:40px;height:40px}
+.board table {margin:10px auto}
+.board td {border:3px solid;border-color:green;width:35px;height:35px}
 img {width:37px}
 .missed {color:white;text-align:center;font-size:25px}
 #ships div{margin-top:10px}
-.shipSunk{opacity:0.2}
-.shipNotSunk{opacity:1}
+.notActive{opacity:0.5}
+.hit{color:red;text-align:center;font-size:25px;background-image: url('ship.png'); background-repeat: no-repeat;background-position: center;background-size:100%}
+/*.shipNotSunk{opacity:1}*/
 #play{display:block;margin:0 auto}
 @media only screen and (min-width:72em){
-#board td {width:76px;height:76px}
+.board td {width:76px;height:76px}
 img {width:70px}
 .missed {font-size:50px}
+.hit {font-size:50px}
 #ships div{margin-top:50px}
 }
- 
+h2 {color:white;margin-top:0px}
 
 #mistakes p{font-size:25px}
 #divName {display:none; margin:0 auto}
 #btnName {width:100%}
-#results-container {display:none;}
 #gram {display:block;margin:0 auto}
 #results{margin-top:30px}
-#message{margin:1px auto}
+#message{margin-top:100px}
