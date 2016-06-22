@@ -23,7 +23,7 @@
 </head>
 
 
-<body data-ng-app="myModule">
+<body data-ng-app="myModule" data-ng-controller="myController">
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -38,56 +38,52 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li><a class="active play" role="button">Play <span class="sr-only"></span></a></li>
-                <li><a id="resultsMenu" role="button">Results</li>
+                <li><a id="resultsMenu" role="button">Results</a></li>
             </ul>
         </div>
     </div>
 </nav>
-<h2 class="text-center" id="mainText">Battleship with General Thomas</h2>
 
 <div class="row" data-ng-controller="myController">
     <div class="col-md-4 col-md-offset-4">
-    <h3 class ="h3 text-center" id="message"></h3>
-    <div id ="mistakes" class = "container-fluid">
-    <p class="text-center"></p>
-    </div>
-
-    <div class="input-group" id="divName">
-        <span class="input-group-btn">
-            <button class="btn btn-default" type="button" id="btnName" ng-click="addUser()">Add me to the winner's table</button>
-        </span>
-        <input id="newUserName" type="text" class="form-control text-center" data-ng-keypress="$event.which === 13 && addUser()" placeholder="Username" aria-describedby="name" >
-    </div>
-    <div id="results-container" >
-    <div class="input-group">
-        <span class="input-group-addon" id="basic-addon1">Find a friend</span>
-        <input type="text" class="form-control" placeholder="username" ng-model="username" aria-describedby="basic-addon1">
-    </div>
-    
-    <table id="results" class="table table-striped text-center">
-    <tr>
-        <td>Nick</td>
-        <td>Mistakes</td>
-    </tr>
-    <tr class="table table-striped" data-ng-repeat="user in users | filter:username | orderBy:'mistakes'">
-        <td > {{user.name}}</td> <td>{{user.mistakes}}</td>
-    </tr> 
-    </table>
-    <button id="play" type="button" class="btn btn-primary play">Play again!</button>
+        <div class="input-group" id="divName">
+            <span class="input-group-btn">
+               <button class="btn btn-default" type="button" id="btnName" ng-click="addUser()">Add me to the winner's table</button>
+            </span>
+            <input id="newUserName" type="text" class="form-control text-center" data-ng-keypress="$event.which === 13 && addUser()" placeholder="Username" aria-describedby="name" >
+        </div>
+        <div id="results-container" >
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">Find a friend</span>
+                <input type="text" class="form-control" placeholder="username" ng-model="username" aria-describedby="basic-addon1">
+            </div>
+            <table id="results" class="table table-striped text-center">
+            <tr>
+                <td>Nick</td>
+                <td>Mistakes</td>
+            </tr>
+            <tr class="table table-striped" data-ng-repeat="user in users | filter:username | orderBy:'mistakes'">
+                <td > {{user.name}}</td> <td>{{user.mistakes}}</td>
+            </tr> 
+            </table>
+            <button id="play" type="button" class="btn btn-primary play">Play again!</button>
+        </div>
     </div>
 </div>
-</div>
-
-<div class="row">   
-	<div id="board" class="col-md-6 col-md-offset-3">
-            <table></table>
+<div id="boards" class="row">
+    <div class="col-md-5">
+        <h2 class = "text-center">General Thomas</h2>
+        <div id="computersBoard" class="board"></div>
     </div>
-    <div class="col-md-3">
-		<div id="ships"></div>
-	</div>
+    <div class="col-md-2">
+        <h1 class = "text-center" id="message"></h1>
+        <h2 class = "text-center" id="mistakes"></h2>
+    </div>
+    <div class="col-md-5">
+        <h2 class = "text-center">Player</h2>
+        <div id="usersBoard" class="board"></div>
+    </div>
 </div>
-
-
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 <script type="text/javascript" src="battleship.js"></script>
