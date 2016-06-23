@@ -7,7 +7,7 @@ function Coordinate(row,col){
 
 // display ship after hit or cross after missed
 function displayHitOrMissed (cell, msg, target){
-    var cellOnBoard = $(target + ' td').eq(cell.row*7+cell.col);
+    var cellOnBoard = $(`${target} td`).eq(cell.row*7+cell.col);
     if(msg === "hit")
     {
         cellOnBoard.addClass("hit");
@@ -37,8 +37,8 @@ function displayMessage (msg){
             
 // display number of mistakes and message of winning, hide board and ships and display next step
 function displayUsersShips(){
-    usersCollection.ships.forEach(function(item){ //for each existing ship
-        item.positions.forEach(function(item){ // for each position in existing ship
+    usersCollection.ships.forEach(item=>{ //for each existing ship
+        item.positions.forEach(item=>{ // for each position in existing ship
             $('#usersBoard td').eq(item.row*7+item.col).html('<img src="ship.png">');
         })
     })
@@ -67,7 +67,7 @@ function isWin(){
 };
             
 function win(){
-    $('#mistakes').html('Number of mistakes: ' + computersCollection.noMistakes);
+    $('#mistakes').html(`Number of mistakes: ${computersCollection.noMistakes}`);
     displayMessage("You won!");
     setTimeout(function(){
         $('#boards').hide();
@@ -86,10 +86,10 @@ Battleship.prototype.View = (function View(){
         $(params.where).append("<table></table>")
         for(i=0;i<params.size;i++)
         {
-            $(params.where + ' table').append("<tr></tr>");
+            $(`${params.where} table`).append("<tr></tr>");
             for(j=0;j<params.size;j++)
             {
-                $(params.where + ' table tr').eq(i).append("<td></td>");
+                $(`${params.where} table tr`).eq(i).append("<td></td>");
             }               
         }
         this.boardSize = params.size;
@@ -122,10 +122,10 @@ Battleship.prototype.Collection = (function(){
 // outputs number of collisions
 Collection.prototype.collision = function(ship){
         var collisions=0;
-        this.ships.forEach(function(item){ //for each existing ship
-            item.positions.forEach(function(item){ // for each position in existing ship
+        this.ships.forEach(item=>{ //for each existing ship
+            item.positions.forEach(item=>{ // for each position in existing ship
                 var checkedPosition = item;
-                ship.positions.forEach(function(item){ //check each position of new ship 
+                ship.positions.forEach(item=>{ //check each position of new ship 
                     if(checkedPosition.col===item.col && checkedPosition.row===item.row){
                         collisions++;
                     }    
@@ -138,8 +138,7 @@ Collection.prototype.collision = function(ship){
 // set random positions of each ship
 Collection.prototype.setPositions = function(){
         this.hits=0;
-        var currentCollection = this;
-        this.ships.forEach(function(item){ //for each ship
+        this.ships.forEach(item=>{ //for each ship
             do{
             item.positions[0]= new Coordinate (Math.floor((Math.random()*(8-item.size))), Math.floor((Math.random()*(8-item.size))));//maximum position of first location of the ship
             if ( Math.random() > 0.5) // horizontal
@@ -159,7 +158,7 @@ Collection.prototype.setPositions = function(){
                 }
             }
             }
-            while(currentCollection.collision(item)>item.size); //if number of collisions is greater than ship's size - create positions again    
+            while(this.collision(item)>item.size); //if number of collisions is greater than ship's size - create positions again    
         });
 }; 
 Collection.prototype.fire = function(col,row,target){
@@ -168,10 +167,10 @@ Collection.prototype.fire = function(col,row,target){
             var shotCell = {};
             shotCell.col = col; 
             shotCell.row = row;
-            this.ships.forEach(function(item,index) { //for each ship
+            this.ships.forEach((item,index)=>{ //for each ship
                     var currentShip = item;
                     var currentShipNumber = index;
-                    item.positions.forEach(function(item,index){ //for each position in current ship
+                    item.positions.forEach((item,index)=>{ //for each position in current ship
                         if( (shotCell.col === item.col) && (shotCell.row === item.row) && (currentShip.positions[index].isHit===false))
                         {
                             currentShip.positions[index].isHit=true;
@@ -200,7 +199,7 @@ Collection.prototype.processGuess = function(col,row,target){
 Collection.prototype.isSunk = function(ship){
     if(ship.hits===ship.size)
         {
-        displayMessage(ship.size + "-ship sunk");
+        displayMessage(`${ship.size}-ship sunk`);
         }
 };
 return Collection;
