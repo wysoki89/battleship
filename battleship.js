@@ -28,10 +28,10 @@ class View{
     // create board to play
     createBoard (params){
         $(params.where).append("<table></table>")
-        for(var i=0;i<params.size;i++)
+        for(let i=0;i<params.size;i++)
         {
             $(`${params.where} table`).append("<tr></tr>")
-            for(var j=0;j<params.size;j++)
+            for(let j=0;j<params.size;j++)
             {
                 $(`${params.where} table tr`).eq(i).append("<td></td>")
             }               
