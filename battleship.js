@@ -19,7 +19,7 @@ function isWin(){
     if (computersCollection.hits === computersCollection.allShips)
     {
         computersCollection.noMistakes = computersCollection.guesses-computersCollection.allShips;
-        win();
+        usersView.win();
         return true;
     }
 };
@@ -71,7 +71,7 @@ class View{
     // display number of mistakes and message of winning, hide board and ships and display next step
     win(){
         $('#mistakes').html(`Number of mistakes: ${computersCollection.noMistakes}`);
-        displayMessage("You won!");
+        usersView.displayMessage("You won!");
         setTimeout(function(){
             $('#boards').hide();
             $('#divName').show();
@@ -88,7 +88,7 @@ class View{
         $('#boards td').removeClass("hit");
         $('#boards td').removeClass("missed");
         $('#boards td').removeClass("guess");
-        displayMessage("");
+        usersView.displayMessage("");
     };
 
 }
@@ -247,18 +247,14 @@ $('#newUserName').on('keypress', function(e){
 });
 // play again action
 $('.play').on('click', function(){
-    restartView();
+    usersView.restartView();
     init();
 });
 
 $('#resultsMenu').on('click', function(){
-    showResults();
+    usersView.showResults();
 });
 
-$('#resultsMenu').on('click', function(){
-    view.results();
-});
-        
 init(); 
 //initialize data for winer's table and add new user after clicking button 
 var myModule = angular.module('myModule', []);
