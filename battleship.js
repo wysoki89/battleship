@@ -120,7 +120,7 @@ class Collection{
             if ( Math.random() > 0.5) // horizontal
             {
                 // create next positions
-                for (var i=1; i < item.size; i++)
+                for (let i=1; i < item.size; i++)
                 {
                     item.positions[i]= new Coordinate(item.positions[i-1].row, item.positions[i-1].col + 1);
                 }    
@@ -128,7 +128,7 @@ class Collection{
             else //vertical
             {
                 // create next positions
-                for (var i=1; i < item.size; i++)
+                for (let i=1; i < item.size; i++)
                 {
                     item.positions[i]= new Coordinate(item.positions[i-1].row + 1, item.positions[i-1].col);
                 }
@@ -154,7 +154,7 @@ class Collection{
         };   
     // set random positions of each ship
     fire(col,row,target){
-                var currentCollection = this; 
+                var that = this; 
                 var currentHits = this.hits;
                 var shotCell = {};
                 shotCell.col = col; 
@@ -170,7 +170,7 @@ class Collection{
                                 usersView.displayHitOrMissed(shotCell, "hit",target);
                                 usersView.displayMessage("Hit!");
                                 currentShip.hits++;
-                                currentCollection.isSunk(currentShip);
+                                that.isSunk(currentShip);
                             }
                         });
                 });
