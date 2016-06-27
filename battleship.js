@@ -7,6 +7,8 @@ class Coordinate{
     };
 };
 
+
+
 function displayUsersShips(){
     usersCollection.ships.forEach(item=>{ //for each existing ship
         item.positions.forEach(item=>{ // for each position in existing ship
@@ -53,11 +55,6 @@ class View{
         }    
     }
 
-    showResults(){
-        $('#boards').hide();
-        $('#divName').hide();
-        $('#results-container').show();
-    }
 
     // display message hit or missed after clicking td
     displayMessage(msg){
@@ -78,6 +75,18 @@ class View{
         },2000);
     };
 
+    addWinner(){
+        var userName = $('#newUserName').val();
+        $.post( "https://sheetsu.com/apis/v1.0/0744fb34d780", { Nick: userName, Mistakes:computersCollection.noMistakes} );
+        $('#results').append(`<tr><td>${userName}</td><td>${computersCollection.noMistakes}</td></tr>`);
+        $('#results tr').addClass("table table-striped text-center");
+    }
+
+    showResults(){
+        $('#boards').hide();
+        $('#divName').hide();
+        $('#results-container').show();
+    }
     // restart view
     restartView(){
         $('#results-container').hide();
@@ -210,6 +219,24 @@ function init(){
     $('#divName').hide();
     $('#results-container').hide();
 };
+function getResults(){
+    var resultsUrl = "https://sheetsu.com/apis/v1.0/0744fb34d780";
+    $.ajax({
+       url: resultsUrl,
+       dataType: 'json',
+       type: 'GET',
+      success: function(data) {
+         data.forEach(item=>{
+             $('#results').append(`<tr><td>${item.Nick}</td><td>${item.Mistakes}</td></tr>`);
+          })
+          $('#results tr').addClass("table table-striped text-center");
+       },
+      // handling error response
+       error: function(data) {
+         console.log(data);
+       }
+     });
+};
     
 // gives location of hit after clicking on td
 $('#computersBoard td').on('click', function(){
@@ -238,10 +265,14 @@ $('#computersBoard td').on('click', function(){
 });
 
 // input user's name action
-$('#btnName').on('click', usersView.showResults);
+$('#btnName').on('click', function(){
+    usersView.addWinner();
+    usersView.showResults();
+});
 // input user's name action on pressing enter
 $('#newUserName').on('keypress', function(e){
     if(e.keyCode===13){
+        usersView.addWinner();
         usersView.showResults();        
     }
 });
@@ -256,16 +287,4 @@ $('#resultsMenu').on('click', function(){
 });
 
 init(); 
-//initialize data for winer's table and add new user after clicking button 
-var myModule = angular.module('myModule', []);
-myModule.controller('myController', function myController($scope){
-        $scope.users = [
-        {name:'Generał Tomasz', mistakes:0},
-        {name:'Marek12', mistakes:39},
-        {name:'elcia', mistakes:12},    
-        ];
-        $scope.addUser = function(){
-            $scope.users.push({'name':$('input').val(), 'mistakes':computersCollection.noMistakes});
-        };
-        
-});
+getResults();
