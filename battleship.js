@@ -8,14 +8,11 @@ class Coordinate{
         this.isHit = false; 
     }
 }
-
-
 /**
  * display users ships on computers board
  * 
  * @function displayUsersShips
  */
-
 function displayUsersShips(){
     usersGame.collection.ships.forEach(item => { 
         item.positions.forEach(item => { 
@@ -23,7 +20,6 @@ function displayUsersShips(){
         })
     })
 }
-
 /**
  * check if user won
  * 
