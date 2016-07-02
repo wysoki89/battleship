@@ -17,7 +17,7 @@ class Coordinate{
  */
 
 function displayUsersShips(){
-    usersCollection.ships.forEach(item => { 
+    usersGame.collection.ships.forEach(item => { 
         item.positions.forEach(item => { 
             $('#usersBoard td').eq(item.row*7 + item.col).html('<img src="ship.png">');
         })
@@ -30,9 +30,9 @@ function displayUsersShips(){
  * @function isWin
  */
 function isWin(){
-    if (computersCollection.hits === computersCollection.allShips){
-        computersCollection.noMistakes = computersCollection.guesses - computersCollection.allShips;
-        usersView.win();
+    if (computersGame.collection.hits === computersGame.collection.allShips){
+        computersGame.collection.noMistakes = computersGame.collection.guesses - computersGame.collection.allShips;
+        usersGame.view.win();
         return true;
     }
 }
@@ -101,8 +101,8 @@ class View{
      * @method win
      */
     win(){
-        $('#mistakes').html(`Number of mistakes: ${computersCollection.noMistakes}`);
-        usersView.displayMessage("You won!");
+        $('#mistakes').html(`Number of mistakes: ${computersGame.collection.noMistakes}`);
+        usersGame.view.displayMessage("You won!");
         setTimeout(function(){
             $('#boards').hide();
             $('#divName').show();
@@ -111,8 +111,8 @@ class View{
 
     addWinner(){
         var userName = $('#newUserName').val();
-        $.post("https://sheetsu.com/apis/v1.0/0744fb34d780", { Nick: userName, Mistakes:computersCollection.noMistakes} );
-        $('#results').append(`<tr><td>${userName}</td><td>${computersCollection.noMistakes}</td></tr>`);
+        $.post("https://sheetsu.com/apis/v1.0/0744fb34d780", { Nick: userName, Mistakes:computersGame.collection.noMistakes} );
+        $('#results').append(`<tr><td>${userName}</td><td>${computersGame.collection.noMistakes}</td></tr>`);
         $('#results tr').addClass("table table-striped text-center");
     }
 
@@ -131,7 +131,7 @@ class View{
         $('#boards td').removeClass("hit");
         $('#boards td').removeClass("missed");
         $('#boards td').removeClass("guess");
-        usersView.displayMessage("");
+        usersGame.view.displayMessage("");
     }
 
 }
@@ -205,16 +205,16 @@ class Collection{
                             if( (shotCell.col === item.col) && (shotCell.row === item.row) && (currentShip.positions[index].isHit===false)){
                                 currentShip.positions[index].isHit=true;
                                 currentHits++;
-                                usersView.displayHitOrMissed(shotCell, "hit", target);
-                                usersView.displayMessage("Hit!");
+                                usersGame.view.displayHitOrMissed(shotCell, "hit", target);
+                                usersGame.view.displayMessage("Hit!");
                                 currentShip.hits++;
                                 that.isSunk(currentShip);
                             }
                         })
                 })
                 if (this.hits === currentHits){ //if there wasn't made another hit
-                        usersView.displayHitOrMissed(shotCell, "missed", target);
-                        usersView.displayMessage("Missed!");
+                        usersGame.view.displayHitOrMissed(shotCell, "missed", target);
+                        usersGame.view.displayMessage("Missed!");
                 }
                 this.hits=currentHits;
                 isWin();
@@ -226,7 +226,7 @@ class Collection{
     // check if ship should sink
     isSunk(ship){
         if(ship.hits===ship.size){
-            usersView.displayMessage(`${ship.size}-ship sunk`);
+            usersGame.view.displayMessage(`${ship.size}-ship sunk`);
             }
     }
 }
@@ -239,18 +239,14 @@ class Battleship{
 }
 
 var computersGame = new Battleship();
-
-var computersView = new View();
-$('#computersBoard').append(computersView.createBoard({size: 7}));
-var computersCollection = new Collection([new Model({size: 1}), new Model({size: 2}),new Model({size: 3}),new Model({size: 4})]);
-var usersView = new View();
-var usersCollection = new Collection([new Model({size: 1}), new Model({size: 2}),new Model({size: 3}),new Model({size: 4})]);
-$('#usersBoard').append(usersView.createBoard({size: 7}))
+var usersGame = new Battleship();
+$('#computersBoard').append(computersGame.view.createBoard({size: 7}));
+$('#usersBoard').append(usersGame.view.createBoard({size: 7}))
 function init(){
-    computersCollection.setPositions();
-    usersCollection.setPositions();
+    computersGame.collection.setPositions();
+    usersGame.collection.setPositions();
     displayUsersShips();
-    usersView.displayMessage("Your turn");
+    usersGame.view.displayMessage("Your turn");
     $('#usersBoard table').addClass("notActive");
     $('#divName').hide();
     $('#results-container').hide();
@@ -278,23 +274,23 @@ function getResults(){
 $('#computersBoard td').on('click', function(){
     if(!$(this).hasClass("guess")){
         $(this).addClass("guess");
-        computersCollection.processGuess($(this).index(), $(this).parent().index(),"#computersBoard");
+        computersGame.collection.processGuess($(this).index(), $(this).parent().index(),"#computersBoard");
         if(isWin()){
             return false;
         }
         setTimeout(function(){
-            usersView.displayMessage("My turn");
+            usersGame.view.displayMessage("My turn");
             $('#computerssBoard table').addClass("notActive");
             $('#usersBoard table').removeClass("notActive");
         }, 1200);
         setTimeout(function(){
-            usersView.displayMessage("...shooting");
+            usersGame.view.displayMessage("...shooting");
         }, 2300);
         setTimeout(function(){
-            usersCollection.processGuess(Math.floor(computersView.boardSize*Math.random()),Math.floor(computersView.boardSize*Math.random()),"#usersBoard");
+            usersGame.collection.processGuess(Math.floor(computersGame.view.boardSize*Math.random()),Math.floor(computersGame.view.boardSize*Math.random()),"#usersBoard");
         }, 3600);
         setTimeout(function(){
-            usersView.displayMessage("Your turn");
+            usersGame.view.displayMessage("Your turn");
             $('#computerssBoard table').removeClass("notActive");
             $('#usersBoard table').addClass("notActive");
         }, 4900);
@@ -303,24 +299,24 @@ $('#computersBoard td').on('click', function(){
 
 // input user's name action
 $('#btnName').on('click', function(){
-    usersView.addWinner();
-    usersView.showResults();
+    usersGame.view.addWinner();
+    usersGame.view.showResults();
 })
 // input user's name action on pressing enter
 $('#newUserName').on('keypress', function(e){
     if(e.keyCode === 13){
-        usersView.addWinner();
-        usersView.showResults();        
+        usersGame.view.addWinner();
+        usersGame.view.showResults();        
     }
 })
 // play again action
 $('.play').on('click', function(){
-    usersView.restartView();
+    usersGame.view.restartView();
     init();
 })
 
 $('#resultsMenu').on('click', function(){
-    usersView.showResults();
+    usersGame.view.showResults();
 })
 
 init(); 
