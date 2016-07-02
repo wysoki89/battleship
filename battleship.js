@@ -48,15 +48,19 @@ class View{
      * @param {Object.Number} size
      */
     createBoard (params){
-        $(params.where).append("<table></table>");
+        var table = document.createElement("table");
         for(let i = 0; i < params.size; i++){
-            $(`${params.where} table`).append("<tr></tr>");
+            var row = document.createElement("tr");
+            table.appendChild(row);
             for(let j = 0; j < params.size; j++){
-                $(`${params.where} table tr`).eq(i).append("<td></td>");
-            }               
+                var cell = document.createElement("td");
+                table.children[i].appendChild(cell);
+             }               
         }
         this.boardSize = params.size;
-        }
+        return table;
+    }
+
     /**
      * display ship after hit or cross after missed
      * 
@@ -227,12 +231,21 @@ class Collection{
     }
 }
 
+class Battleship{
+    constructor(){
+        this.view = new View;
+        this.collection = new Collection([new Model({size: 1}), new Model({size: 2}),new Model({size: 3}),new Model({size: 4})]);
+    }
+}
+
+var computersGame = new Battleship();
+
 var computersView = new View();
-computersView.createBoard({size: 7, where: '#computersBoard'});
+$('#computersBoard').append(computersView.createBoard({size: 7}));
 var computersCollection = new Collection([new Model({size: 1}), new Model({size: 2}),new Model({size: 3}),new Model({size: 4})]);
 var usersView = new View();
 var usersCollection = new Collection([new Model({size: 1}), new Model({size: 2}),new Model({size: 3}),new Model({size: 4})]);
-usersView.createBoard({size: 7, where: '#usersBoard'});
+$('#usersBoard').append(usersView.createBoard({size: 7}))
 function init(){
     computersCollection.setPositions();
     usersCollection.setPositions();
