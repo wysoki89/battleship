@@ -157,7 +157,7 @@ class Battleship{
                         // lodash map for taking into array values of size from each ship and than lodash sum
                         this.allShips = _.sum(_.map(this.ships, 'size'));
                     }
-
+                    // set random positions of each ship
                     setPositions(){
                         this.ships.forEach(item => { //for each ship
                             do{
@@ -175,26 +175,36 @@ class Battleship{
                                 }
                             }
                             }
-                            while(this._collision(item) > item.size); //if number of collisions is greater than ship's size - create positions again    
+                            while(this._collision(item)>0 && this._collision(item)<100 ); //if number of collisions is greater than ship's size - create positions again    
                         })
                     } 
                     // outputs number of collisions
                     _collision(ship){
                             var collisions = 0;
                             this.ships.forEach(item => { //for each existing ship
-                                item.positions.forEach(item => { // for each position in existing ship
-                                    var checkedPosition = item;
-                                    ship.positions.forEach(item => { //check each position of new ship 
-                                        if(checkedPosition.col === item.col && checkedPosition.row === item.row){
-                                            collisions++;
-                                        }    
+                                if(item === ship){
+                                    console.log("same ship")
+                                    return false;
+                                }
+                                else{
+                                    item.positions.forEach(item => { // for each position in existing ship
+                                        var checkedPosition = item;
+                                        ship.positions.forEach(item => { //check each position of new ship 
+                                            var dist = Math.sqrt(Math.pow(checkedPosition.col - item.col,2)+Math.pow(checkedPosition.row - item.row,2));
+                                            console.log(dist); 
+                                            if(dist<=1.44){
+                                                collisions++;
+                                                console.log(collisions)
+                                            }    
+                                        })
                                     })
-                                })
+                                }
                             })
                             return collisions;
                     }   
-                    // set random positions of each ship
+                    
                     fire(col,row,target){
+                                this.guesses++;
                                 var that = this; 
                                 var currentHits = this.hits;
                                 var shotCell = {};
@@ -206,24 +216,20 @@ class Battleship{
                                         item.positions.forEach((item,index) => { //for each position in current ship
                                             if( (shotCell.col === item.col) && (shotCell.row === item.row) && (currentShip.positions[index].isHit===false)){
                                                 currentShip.positions[index].isHit=true;
-                                                currentHits++;
+                                                that.hits++;
                                                 usersGame.view.displayHitOrMissed(shotCell, "hit", target);
                                                 usersGame.view.displayMessage("Hit!");
                                                 currentShip.hits++;
                                                 that.isSunk(currentShip);
+                                                isWin();
                                             }
                                         })
                                 })
                                 if (this.hits === currentHits){ //if there wasn't made another hit
                                         usersGame.view.displayHitOrMissed(shotCell, "missed", target);
                                         usersGame.view.displayMessage("Missed!");
+                                        return false;
                                 }
-                                this.hits=currentHits;
-                                isWin();
-                    }
-                    processGuess(col,row,target){ 
-                            this.guesses++;
-                            this.fire(col,row,target);
                     }
                     // check if ship should sink
                     isSunk(ship){
@@ -269,11 +275,13 @@ function getResults(){
      })
 }
     
-// gives location of hit after clicking on td
 $('#computersBoard td').on('click', function action(){
     if(!$(this).hasClass("guess")){
+        var n =0;
         $(this).addClass("guess");
-        computersGame.collection.processGuess($(this).index(), $(this).parent().index(),"#computersBoard");
+        if (computersGame.collection.fire($(this).index(), $(this).parent().index(),"#computersBoard") !== false){
+            return false;
+        }
         if(isWin()){
             return false;
         }
@@ -281,23 +289,25 @@ $('#computersBoard td').on('click', function action(){
         $('#computersBoard td').off();
         setTimeout(function(){
             $('#computersBoard td').on('click', action);
-        },4900)
+        },3000)
         setTimeout(function(){
             usersGame.view.displayMessage("My turn");
             $('#computersBoard table').addClass("notActive");
             $('#usersBoard table').removeClass("notActive");
-        }, 1200);
-        setTimeout(function(){
-            usersGame.view.displayMessage("...shooting");
-        }, 2300);
-        setTimeout(function(){
-            usersGame.collection.processGuess(Math.floor(computersGame.view.boardSize*Math.random()),Math.floor(computersGame.view.boardSize*Math.random()),"#usersBoard");
-        }, 3600);
+        }, 1000);
+        setTimeout(function a(){
+            var isShot = usersGame.collection.fire(Math.floor(computersGame.view.boardSize*Math.random()),Math.floor(computersGame.view.boardSize*Math.random()),"#usersBoard");
+            if (isShot !== false){
+                n++;
+                console.log(isShot);
+                setTimeout(a,500);
+            }    
+        }, 2000);
         setTimeout(function(){
             usersGame.view.displayMessage("Your turn");
             $('#computersBoard table').removeClass("notActive");
             $('#usersBoard table').addClass("notActive");
-        }, 4900);
+        }, 3000+n*500);
     }
 })
 
