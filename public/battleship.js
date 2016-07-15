@@ -16,7 +16,7 @@ class Coordinate{
 function displayUsersShips(){
     usersGame.collection.ships.forEach(item => { 
         item.positions.forEach(item => { 
-            $('#usersBoard td').eq(item.row*7 + item.col).html('<img src="ship.png">');
+            $('#usersBoard td').eq(item.row*7 + item.col).html('<img draggable="true" src="ship.png">');
         })
     })
 }
@@ -121,9 +121,14 @@ class Battleship{
 
                 addWinner(){
                     var userName = $('#newUserName').val();
-                    $.post("https://sheetsu.com/apis/v1.0/0744fb34d780", { Nick: userName, Mistakes:computersGame.collection.noMistakes} );
-                    $('#results').append(`<tr><td>${userName}</td><td>${computersGame.collection.noMistakes}</td></tr>`);
+                    if(userName === "Sabina"){
+                        alert("Sabina! Wpadłaś w oko generałowi Tomaszowi ;)")
+                    }
+                    $.post("/addUser", {nick: userName, mistakes:computersGame.collection.noMistakes});
+                    $('#results tr').not(':eq(0)').html("");
+                    getResults();
                     $('#results tr').addClass("table table-striped text-center");
+
                 }
 
                 showResults(){
@@ -181,17 +186,15 @@ class Battleship{
                     // outputs number of collisions
                     _collision(ship){
                             var collisions = 0;
-                            this.ships.forEach(item => { //for each existing ship
-                                if(item === ship){
-                                    console.log("same ship")
+                            this.ships.forEach(checkedShip => { //for each existing ship
+                                if(checkedShip === ship){
                                     return false;
                                 }
                                 else{
-                                    item.positions.forEach(item => { // for each position in existing ship
-                                        var checkedPosition = item;
-                                        ship.positions.forEach(item => { //check each position of new ship 
-                                            var dist = Math.sqrt(Math.pow(checkedPosition.col - item.col,2)+Math.pow(checkedPosition.row - item.row,2));
-                                            console.log(dist); 
+                                    checkedShip.positions.forEach(checkedPos => { // for each position in existing ship
+                                        var checkedPosition = checkedPos;
+                                        ship.positions.forEach(newShipsPos => { //check each position of new ship
+                                            var dist = Math.sqrt(Math.pow(checkedPosition.col - newShipsPos.col,2)+Math.pow(checkedPosition.row - newShipsPos.row,2));
                                             if(dist<=1.44){
                                                 collisions++;
                                             }    
@@ -238,7 +241,7 @@ class Battleship{
                             }
                     }
                 }
-            return new Collection([new Model({size: 1}), new Model({size: 2}),new Model({size: 3}),new Model({size: 4})]);
+            return new Collection([new Model({size: 4}), new Model({size: 3}),new Model({size: 2}),new Model({size: 1})]);
             }())
         }
 }
@@ -251,6 +254,11 @@ function init(){
     computersGame.collection.setPositions();
     usersGame.collection.setPositions();
     computersGame.collection.hits=0;
+    computersGame.collection.noMistakes=0;
+    computersGame.collection.guessses=0;
+    usersGame.collection.hits=0;
+    usersGame.collection.noMistakes=0;
+    usersGame.collection.guessses=0;
     displayUsersShips();
     usersGame.view.displayMessage("Your turn");
     $('#usersBoard table').addClass("notActive");
@@ -258,23 +266,17 @@ function init(){
     $('#results-container').hide();
 }
 function getResults(){
-    var resultsUrl = "https://sheetsu.com/apis/v1.0/0744fb34d780";
-    $.ajax({
-       url: resultsUrl,
-       dataType: 'json',
-       type: 'GET',
-      success: function(data) {
-         data.forEach(item => {
-             $('#results').append(`<tr><td>${item.Nick}</td><td>${item.Mistakes}</td></tr>`);
+    $.get("/results", function (data) {
+        data = data.sort(function(a,b){
+            return a.mistakes > b.mistakes;
+        }).slice(0,10);
+        data.forEach(item => {
+             $('#results').append(`<tr><td>${item.nick}</td><td>${item.mistakes}</td></tr>`);
           })
           $('#results tr').addClass("table table-striped text-center");
-       },
-      // handling error response
-       error: function(data) {
-         console.log(data);
-       }
-     })
+       })
 }
+
     
 $('#computersBoard td').on('click', function action(){
     if(!$(this).hasClass("guess")){
@@ -333,6 +335,7 @@ $('.play').on('click', function(){
 $('#resultsMenu').on('click', function(){
     usersGame.view.showResults();
 })
+
 
 init(); 
 getResults();

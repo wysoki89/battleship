@@ -11,8 +11,8 @@ img {width:37px}
 /*.shipNotSunk{opacity:1}*/
 #play{display:block;margin:0 auto}
 @media only screen and (min-width:72em){
-.board td {width:76px;height:76px}
-img {width:70px}
+.board td {width:74px;height:74px}
+img {width:62px}
 .missed {font-size:50px}
 .hit {font-size:50px}
 #ships div{margin-top:50px}
@@ -25,3 +25,4 @@ h2 {color:white;margin-top:0px}
 #gram {display:block;margin:0 auto}
 #results{margin-top:30px}
 #message{margin-top:100px}
+#generatePositionsButton{margin-top:400px}

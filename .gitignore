@@ -1,2 +1,4 @@
 lodash.js
-d
+node_modules/
+views/
+config.js
