@@ -175,7 +175,7 @@ class Battleship{
                                 }
                             }
                             }
-                            while(this._collision(item)>0 && this._collision(item)<100 ); //if number of collisions is greater than ship's size - create positions again    
+                            while(this._collision(item)>0); //if number of collisions is greater than ship's size - create positions again    
                         })
                     } 
                     // outputs number of collisions
@@ -194,12 +194,12 @@ class Battleship{
                                             console.log(dist); 
                                             if(dist<=1.44){
                                                 collisions++;
-                                                console.log(collisions)
                                             }    
                                         })
                                     })
                                 }
                             })
+
                             return collisions;
                     }   
                     
@@ -250,6 +250,7 @@ $('#usersBoard').append(usersGame.view.createBoard({size: 7}))
 function init(){
     computersGame.collection.setPositions();
     usersGame.collection.setPositions();
+    computersGame.collection.hits=0;
     displayUsersShips();
     usersGame.view.displayMessage("Your turn");
     $('#usersBoard table').addClass("notActive");
